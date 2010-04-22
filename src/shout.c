@@ -718,7 +718,7 @@ int shout_set_format(shout_t *self, unsigned int format)
 	if (self->state != SHOUT_STATE_UNCONNECTED)
 		return self->error = SHOUTERR_CONNECTED;
 
-	if (format != SHOUT_FORMAT_OGG && format != SHOUT_FORMAT_MP3)
+	if (format != SHOUT_FORMAT_OGG && format != SHOUT_FORMAT_MP3 && format != SHOUT_FORMAT_AAC)
 		return self->error = SHOUTERR_UNSUPPORTED;
 
 	self->format = format;
@@ -990,6 +990,9 @@ static int try_connect (shout_t *self)
 		} else if (self->format == SHOUT_FORMAT_MP3) {
 			if ((rc = self->error = shout_open_mp3(self)) != SHOUTERR_SUCCESS)
                                 goto failure;
+		} else if (self->format == SHOUT_FORMAT_AAC) {
+			if ((rc = self->error = shout_open_aac(self)) != SHOUTERR_SUCCESS)
+                                goto failure;
 		} else {
                         rc = SHOUTERR_INSANE;
                         goto failure;
@@ -1119,6 +1122,8 @@ static int create_http_request(shout_t *self)
 		if (self->format == SHOUT_FORMAT_OGG && queue_printf(self, "Content-Type: application/ogg\r\n"))
 			break;
 		if (self->format == SHOUT_FORMAT_MP3 && queue_printf(self, "Content-Type: audio/mpeg\r\n"))
+			break;
+		if (self->format == SHOUT_FORMAT_AAC && queue_printf(self, "Content-Type: audio/aac\r\n"))
 			break;
 		if (queue_printf(self, "ice-name: %s\r\n", self->name ? self->name : "no name"))
 			break;
