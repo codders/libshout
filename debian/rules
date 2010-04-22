@@ -1,0 +1,46 @@
+#!/usr/bin/make -f
+# -*- mode: makefile; coding: utf-8 -*-
+# Copyright © 2004-2008 Jonas Smedegaard <dr@jones.dk>
+# Copyright © 2003 Keegan Quinn <ice@thebasement.org>
+
+ifneq ($(DEB_MAINTAINER_BUILD),)
+  # Maintainer mode build, enable optional operations
+  DEB_COPYRIGHT_CHECK_STRICT = yes
+  DEB_AUTO_UPDATE_DEBIAN_CONTROL = yes
+endif
+
+# See debian/README.cdbs-tweaks for info on local overrides
+include debian/cdbs/1/rules/upstream-tarball.mk
+include debian/cdbs/1/rules/copyright-check.mk
+include /usr/share/cdbs/1/rules/patchsys-quilt.mk
+include /usr/share/cdbs/1/class/autotools.mk
+include /usr/share/cdbs/1/rules/debhelper.mk
+include debian/cdbs/1/rules/buildinfo.mk
+
+pkg = libshout
+DEB_UPSTREAM_PACKAGE = $(pkg)
+DEB_UPSTREAM_URL = http://downloads.us.xiph.org/releases/$(pkg)
+DEB_UPSTREAM_TARBALL_MD5 = 4f75fc9901c724b712c371c9a1e782d3
+
+DEB_INSTALL_EXAMPLES_libshout3-dev = examples/example.c
+
+# Let d-shlibs calculate development package dependencies
+#  and handle shared library install
+common-binary-post-install-arch::
+#	d-devlibdeps debian/libshout3-dev.substvars debian/tmp/usr/lib/libshout.so
+#	d-shlibmove --commit --movedev "debian/tmp/usr/include/*" usr/include/ debian/tmp/usr/lib/libshout.so
+	bash debian/d-devlibdeps debian/libshout3-dev.substvars debian/tmp/usr/lib/libshout.so
+	bash debian/d-shlibmove --commit --movedev "debian/tmp/usr/include/*" usr/include/ debian/tmp/usr/lib/libshout.so
+
+clean::
+	rm -f debian/libshout3.install debian/libshout3-dev.examples debian/Makefile.am debian/Makefile.in
+
+
+# Upstream requirements
+CDBS_BUILD_DEPENDS := $(CDBS_BUILD_DEPENDS), libogg-dev (>> 1.0.0), libvorbis-dev (>> 1.0.0), pkg-config, libtheora-dev (>> 0.0.0.alpha4), libspeex-dev
+
+# Packaging requirements
+CDBS_BUILD_DEPENDS := $(CDBS_BUILD_DEPENDS), d-shlibs (>= 0.18)
+
+# Fix double cdbs build-dependencies
+CDBS_BUILD_DEPENDS := $(shell echo '$(CDBS_BUILD_DEPENDS)' | sed -e '/\bcdbs (>= 0.4.39)/ s/ *,* *\bcdbs (>= \(0.4.23-1.1\|0.4.27\)) *,* */, /g' -e 's/^ *, *//' -e 's/ *, *$$//')

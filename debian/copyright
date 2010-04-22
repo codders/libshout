@@ -1,0 +1,79 @@
+This is libshout packaged for Debian GNU systems.
+
+
+Upstream source: http://downloads.xiph.org/releases/libshout/
+
+Note: Tarball distributed with Debian is currently not pristine: the
+subdir "debian" has been stripped to not clash with the official Debian
+packaging files.
+
+
+Upstream Authors: the icecast team <team@icecast.org>
+
+
+Files: *
+Copyright: © 2002-2003 the Icecast team <team@icecast.org>
+Licence: LGPL-2+
+ Copyright (C) 2002-2003 the Icecast team <team@icecast.org>
+ .
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Library General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later version.
+
+Files: src/avl/*
+Copyright: © 1995-1997 Sam Rushing <rushing@nightmare.com>
+Licence: Other
+ Copyright (C) 1995-1997 by Sam Rushing <rushing@nightmare.com>
+ . 
+ All Rights Reserved
+ . 
+ Permission to use, copy, modify, and distribute this software and
+ its documentation for any purpose and without fee is hereby
+ granted, provided that the above copyright notice appear in all
+ copies and that both that copyright notice and this permission
+ notice appear in supporting documentation, and that the name of Sam
+ Rushing not be used in advertising or publicity pertaining to
+ distribution of the software without specific, written prior
+ permission.
+ . 
+ SAM RUSHING DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+ INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN
+ NO EVENT SHALL SAM RUSHING BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+ CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+ OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+ NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Files: src/thread/*
+Copyright: © 1999, 2000 the icecast team <team@icecast.org>
+Licence: LGPL-2+
+ Copyright (c) 1999, 2000 the icecast team <team@icecast.org>
+ .
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Library General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later version.
+
+Files: src/net/*
+Copyright: © 1999 the icecast team <team@icecast.org>
+Licence: LGPL-2+
+ Copyright (C) 1999 the icecast team <team@icecast.org>
+ .
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Library General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later version.
+
+
+Files: src/httpp/*
+Copyright: © jack moffitt <jack@icecast.org>
+Licence: LGPL-any
+  lgpl
+  .
+  by jack moffitt <jack@icecast.org>
+
+
+On Debian systems, the complete text of both the GNU Library General Public
+License (LGPL) and the GNU Library General Public License version 2 
+(LGPL-2) can be found below `/usr/share/common-licenses/'.

@@ -1,0 +1,2 @@
+debian/tmp/usr/lib/pkgconfig/*
+debian/tmp/usr/share/aclocal/shout.m4

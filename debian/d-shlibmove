@@ -1,0 +1,213 @@
+#!/bin/bash
+#   d-shlibmove -- move shared library files around for Debian packaging
+#   Copyright (C) 2002, 2005 Junichi Uekawa
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+# 2002 Apr 23. Created.
+#   automatic packaging of libtool-created library packages.
+
+# from d-shlibs package
+
+set -e
+
+function getname () {
+    local SONAMELIBNAME
+    local SONAMEVERSION
+    local SONAME
+    SONAME="$1"
+    SONAMELIBNAME=$(echo $SONAME | sed 's/\.so\..*$//')
+    SONAMEVERSION=$(echo $SONAME | sed 's/^.*\.so\.//')
+    case "$SONAMELIBNAME" in
+	*[0-9])
+	    RETURN="$SONAMELIBNAME-$SONAMEVERSION"
+	    ;;
+	*)
+	    RETURN="$SONAMELIBNAME$SONAMEVERSION"
+	    ;;
+    esac
+}
+
+
+
+function readlibnameinfo () {
+    LIBNAME="$1"
+    
+    if  [ -z "$1" ] || ! echo "$1" | grep ".so$" > /dev/null ; then 
+	echo "$0: [$1] is not a valid shared library file name " >&2 
+	exit 1;	
+    fi
+    
+    if [ ! -h "$1" ]; then
+	echo "$0: expected [$1] to be a symlink, but it is not" >&2
+	exit 1;
+    fi
+    
+    SONAME=$(set -o pipefail; objdump -p ${LIBNAME} |sed -n 's/^.*SONAME *//p' )
+    getname "$SONAME"
+    SONAMEPKGNAME="$RETURN"
+    PK=$(basename "$1" | sed 's/\.so$//')
+    REALSO=$(readlink -f "${LIBNAME}")
+}
+
+function check_line () {
+ # check line
+    local PKGNAME="$1"
+    local ENTRYLINE="$2"
+    
+    if ! awk '/^Package:.*'"$PKGNAME"'/,/^$/{print}' "$CONTROL" | \
+	grep "$ENTRYLINE"  > /dev/null; then
+	echo "E: line [$ENTRYLINE] not found in $CONTROL section for $PKGNAME"
+	# set this error signifier to true
+	CHECK_ERROR=true
+    fi
+}
+
+echo "Library package automatic movement utility"
+
+CONTROL=debian/control
+
+execscript=$(tempfile)
+INSTALLFILE_SHLPKG=$(tempfile)
+INSTALLFILE_DEVPKG=$(tempfile)
+cat > ${execscript} <<EOF
+set -e
+EOF
+
+DEVLIB_TO_CHECK=
+SUFFIX=
+DEVSUFFIX=
+C102=
+
+DOIT=no
+while [ -n "$1" ]; do
+    case $1 in
+	--moveshl)
+	    echo "$2 $3" >> "${INSTALLFILE_SHLPKG}"
+	    shift; shift; shift;
+	    ;;
+	--movedev)
+	    echo "$2 $3" >> "${INSTALLFILE_DEVPKG}"
+	    shift; shift; shift;
+	    ;;
+	--movedevdoc)
+	    echo "$2 usr/share/doc/\${PKGDEV}" >> "${INSTALLFILE_DEVPKG}"
+	    shift; shift;
+	    ;;
+	--commit)
+	    DOIT=yes
+	    shift;
+	    ;;
+	--extralib)
+	    readlibnameinfo "$2"
+	    DEVLIB_TO_CHECK="${DEVLIB_TO_CHECK} $2"
+	    echo "$(dirname $2)/${PK}.a usr/lib"  >> "${INSTALLFILE_DEVPKG}"
+	    echo "$(dirname $2)/${PK}.la usr/lib || true"  >> "${INSTALLFILE_DEVPKG}"
+	    echo "$(dirname $2)/${PK}.so usr/lib"  >> "${INSTALLFILE_DEVPKG}"
+	    echo "$(dirname ${REALSO})/${SONAME}  usr/lib"  >> "${INSTALLFILE_SHLPKG}"
+	    echo "${REALSO} usr/lib" >> "${INSTALLFILE_SHLPKG}"
+	    
+	    shift; shift;
+	    ;;
+	--shlibs-local)
+	    shift;
+	    SHLIBSLOCALVER="$1";
+	    shift;
+	    ;;
+	--suffix)
+	    shift;
+	    SUFFIX="$1";
+	    shift;
+	    ;;
+	--devsuffix)
+	    shift;
+	    DEVSUFFIX="$1";
+	    shift;
+	    ;;
+	--c102)
+	    C102="c102"
+	    shift;;
+	--|*)
+	    break;
+	    ;;
+    esac
+done
+
+DEVLIB_TO_CHECK="${DEVLIB_TO_CHECK} $1"
+readlibnameinfo "$1"
+PKGDEV="${SONAMEPKGNAME}${DEVSUFFIX}-dev"
+PKGSHL="${SONAMEPKGNAME}${SUFFIX}${C102}"
+
+INSTALLDIR="install -d -m 755 "
+echo "${INSTALLDIR} debian/${PKGDEV}/usr/lib" >> "$execscript"
+echo "${INSTALLDIR} debian/${PKGSHL}/usr/lib"  >> "$execscript"
+echo "mv $(dirname $1)/${PK}.a debian/${PKGDEV}/usr/lib"  >> "$execscript"
+echo "mv $(dirname $1)/${PK}.la debian/${PKGDEV}/usr/lib || true"  >> "$execscript"
+echo "mv $(dirname $1)/${PK}.so debian/${PKGDEV}/usr/lib"  >> "$execscript"
+echo "mv $(dirname ${REALSO})/${SONAME} debian/${PKGSHL}/usr/lib"  >> "$execscript"
+echo "mv ${REALSO} debian/${PKGSHL}/usr/lib"  >> "$execscript"
+
+if [ -n "${SHLIBSLOCALVER}" ]; then 
+    echo "echo \"${SONAMELIBNAME} ${SONAMEVERSION} ${PKGSHL} (>= ${SHLIBSLOCALVER})\" >> debian/shlibs.local" >> "$execscript"
+fi
+
+bash debian/d-devlibdeps debian/"${PKGDEV}".substvars "${DEVLIB_TO_CHECK}"
+
+#do some definition for the file.
+echo "PKGDEV=${PKGDEV}" >> "${execscript}"
+echo "PKGSHL=${PKGSHL}" >> "${execscript}"
+
+#do the extra files
+cat "${INSTALLFILE_SHLPKG}" | while read A B; do
+    echo "${INSTALLDIR} debian/${PKGSHL}/${B}" >> "${execscript}"
+    echo "mv ${A} debian/${PKGSHL}/${B}" >> "${execscript}"
+done
+cat "${INSTALLFILE_DEVPKG}" | while read A B; do
+    echo "${INSTALLDIR} debian/${PKGDEV}/${B}" >> "${execscript}"
+    echo "mv ${A} debian/${PKGDEV}/${B}" >> "${execscript}"
+done
+
+cat "${execscript}"
+
+# check the syntax of the control file.
+CHECK_ERROR=false
+
+check_line "${PKGDEV}" "Provides:.*${PK}-dev"
+check_line "${PKGDEV}" "Conflicts:.*${PK}-dev"
+check_line "${PKGSHL}" "Section: libs" 
+if [ -n "${SUFFIX}" ]; then
+    check_line "${PKGSHL}" "Conflicts: ${SONAMEPKGNAME}" 
+fi
+if [ -n "${C102}" ]; then
+    check_line "${PKGSHL}" "Conflicts: ${SONAMEPKGNAME}${SUFFIX}" 
+fi
+check_line "${PKGDEV}" "Section: \(devel\|libdevel\)" 
+check_line "${PKGDEV}" "Depends:.*${PKGSHL}" 
+check_line "${PKGSHL}" "Depends:.*[$]{shlibs:Depends}"
+
+if [ "${CHECK_ERROR}" = "true" ]; then
+    echo "Error occurred, aborting" >&2
+    exit 1
+fi
+
+if [ "${DOIT}" = "yes" ]; then
+    sh "${execscript}"
+else
+    echo "Dry-run. If you are satisfied, run with --commit"
+    exit 1
+fi
+rm -f "${execscript}" "${INSTALLFILE_DEVPKG}"" ${INSTALLFILE_SHLPKG}"
+
+exit 0

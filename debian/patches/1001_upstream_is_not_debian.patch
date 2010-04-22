@@ -1,0 +1,32 @@
+diff -ruN libshout/configure.orig libshout/configure
+--- libshout/configure.orig	2006-01-03 20:19:11.000000000 +0100
++++ libshout/configure	2006-05-04 22:28:59.000000000 +0200
+@@ -25819,7 +25819,7 @@
+ 
+ 
+ 
+-                                                                                                                                                                ac_config_files="$ac_config_files Makefile debian/Makefile include/Makefile include/shout/Makefile include/shout/shout.h src/Makefile src/net/Makefile src/timing/Makefile src/thread/Makefile src/avl/Makefile src/httpp/Makefile doc/Makefile examples/Makefile win32/Makefile shout-config shout.pc"
++                                                                                                                                                                ac_config_files="$ac_config_files Makefile include/Makefile include/shout/Makefile include/shout/shout.h src/Makefile src/net/Makefile src/timing/Makefile src/thread/Makefile src/avl/Makefile src/httpp/Makefile doc/Makefile examples/Makefile win32/Makefile shout-config shout.pc"
+ cat >confcache <<\_ACEOF
+ # This file is a shell script that caches the results of configure
+ # tests run on this system so they can be shared between configure
+@@ -26412,7 +26412,6 @@
+   case "$ac_config_target" in
+   # Handling of arguments.
+   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+-  "debian/Makefile" ) CONFIG_FILES="$CONFIG_FILES debian/Makefile" ;;
+   "include/Makefile" ) CONFIG_FILES="$CONFIG_FILES include/Makefile" ;;
+   "include/shout/Makefile" ) CONFIG_FILES="$CONFIG_FILES include/shout/Makefile" ;;
+   "include/shout/shout.h" ) CONFIG_FILES="$CONFIG_FILES include/shout/shout.h" ;;
+diff -ruN libshout/Makefile.in.orig libshout/Makefile.in
+--- libshout/Makefile.in.orig	2006-01-03 20:19:09.000000000 +0100
++++ libshout/Makefile.in	2006-05-04 22:28:31.000000000 +0200
+@@ -246,7 +246,7 @@
+ target_alias = @target_alias@
+ AUTOMAKE_OPTIONS = 1.6 foreign
+ ACLOCAL_AMFLAGS = -I m4
+-SUBDIRS = include src examples debian doc win32
++SUBDIRS = include src examples doc win32
+ EXTRA_DIST = INSTALL m4/shout.m4 m4/ac_config_libconfig_in.m4 m4/acx_pthread.m4 \
+ 	m4/ogg.m4 m4/vorbis.m4 m4/xiph_compiler.m4 m4/xiph_net.m4 \
+ 	m4/xiph_types.m4

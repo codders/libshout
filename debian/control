@@ -1,0 +1,39 @@
+Source: libshout
+Section: libs
+Priority: optional
+Maintainer: Debian Icecast team <pkg-icecast-devel@lists.alioth.debian.org>
+Uploaders: Jonas Smedegaard <dr@jones.dk>, Guillaume Pellerin <yomguy@altern.org>, Romain Beauxis <toots@rastageeks.org>, Ying-Chun Liu <grandpaul@gmail.com>
+Build-Depends: cdbs (>= 0.4.39), autotools-dev, devscripts (>= 2.10.7), quilt, patchutils (>= 0.2.25), debhelper (>= 5.0.44), dh-buildinfo, libogg-dev (>> 1.0.0), libvorbis-dev (>> 1.0.0), pkg-config, libtheora-dev (>> 0.0.0.alpha4), libspeex-dev, d-shlibs (>= 0.18)
+Vcs-Svn: svn://svn.debian.org/svn/pkg-icecast/libshout/trunk
+Vcs-Browser: http://svn.debian.org/wsvn/pkg-icecast/libshout/trunk
+Standards-Version: 3.7.3
+Homepage: http://www.icecast.org/
+
+Package: libshout3-dev
+Section: libdevel
+Architecture: any
+Depends: libshout3 (= ${binary:Version}), ${devlibs:Depends}, ${misc:Depends}, pkg-config
+Provides: libshout-dev
+Conflicts: libshout-dev
+Description: MP3/Ogg Vorbis broadcast streaming library (development)
+ A library for communicating with and sending data to Icecast and Icecast 2
+ streaming audio servers.  It handles the socket connection, the timing of
+ the data transmission, and prevents bad data from getting to the server.
+ .
+ With just a few lines of code, a programmer can easily turn any application
+ into a streaming source for an Icecast-based server.  Libshout also allows
+ developers who want a specific feature set (database access, request taking)
+ to concentrate on that feature set, instead of worrying about how server
+ communication works.
+ .
+ This package contains the development headers, static libraries, and source
+ code to an example program.
+
+Package: libshout3
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: MP3/Ogg Vorbis broadcast streaming library
+ A library for communicating with and sending data to Icecast and Icecast 2
+ streaming audio servers.  It handles the socket connection, the timing of
+ the data transmission, and prevents bad data from getting to the server.

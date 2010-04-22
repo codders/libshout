@@ -1,0 +1,10 @@
+--- d-devlibdeps	2006-07-01 07:04:26.000000000 +0200
++++ /home/jonas/src/SVNauth/pkg-icecast/libshout/debian/d-devlibdeps	2006-07-15 14:21:32.000000000 +0200
+@@ -85,6 +85,7 @@
+ 	-e 's/libtheora0-dev/libtheora-dev/' \
+ 	-e 's/libvorbisenc2-dev/libvorbis-dev/' \
+ 	-e 's/libogg0-dev/libogg-dev/' \
++	-e 's/libspeex1-dev/libspeex-dev/' \
+ 	-e 's/librt1-dev//' \
+ 
+ 

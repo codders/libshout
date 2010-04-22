@@ -1,0 +1,163 @@
+#!/bin/bash
+#   d-devlibdeps -- get list of build-time dependencies
+#   Copyright (C) 2002-2005 Junichi Uekawa
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+# 2002 May 3. Created.
+#   automatic depends line generator.
+
+set -e
+
+function getname () {
+    local SONAMELIBNAME
+    local SONAMEVERSION
+    local SONAME
+    SONAME="$1"
+    SONAMELIBNAME=$(echo $SONAME | sed 's/\.so\..*$//')
+    SONAMEVERSION=$(echo $SONAME | sed 's/^.*\.so\.//')
+    case "$SONAMELIBNAME" in
+	*[0-9])
+	    RETURN="$SONAMELIBNAME-$SONAMEVERSION"
+	    ;;
+	*)
+	    RETURN="$SONAMELIBNAME$SONAMEVERSION"
+	    ;;
+    esac
+}
+
+function overridedevlibdeps () {
+    # overrides necessary until the scheme is adopted.
+    sed \
+	-e 's/libX11-6-dev/libx11-dev | xlibs-dev (<< 4.3.0)/' \
+	-e 's/libXext6-dev/libxext-dev | xlibs-dev (<< 4.3.0)/' \
+	-e 's/libXi6-dev/libxi-dev | xlibs-dev (<< 4.3.0)/' \
+	-e 's/libXpm4-dev/libxpm-dev | xlibs-dev (<< 4.3.0)/' \
+	-e 's/libICE6-dev/libice-dev | xlibs-dev (<< 4.3.0)/' \
+	-e 's/libSM6-dev/libsm-dev | xlibs-dev (<< 4.3.0)/' \
+	-e 's/libGL1-dev/xlibmesa-gl-dev | xlibs-dev (<< 4.3.0)/' \
+	-e 's/libGLU1-dev/xlibmesa-glu-dev | xlibs-dev (<< 4.3.0)/' \
+	-e 's/libcrypt1-dev//' \
+	-e 's/libcrypt1\.1-dev//' \
+	-e 's/libdl2-dev//' \
+	-e 's/libdl2.1-dev//' \
+	-e 's/libm6-dev//' \
+	-e 's/libm6.1-dev//' \
+	-e 's/libm1-dev//' \
+	-e 's/libnsl1-dev//' \
+	-e 's/libnsl1\.1-dev//' \
+	-e 's/libpthread0-dev//' \
+	-e 's/libpthread0\.3-dev//' \
+	-e 's/libpthread.*-dev/libpthread-dev/' \
+	-e 's/libresolv2-dev//' \
+	-e 's/libglib-1.2-0-dev/libglib1.2-dev/' \
+	-e 's/libgthread-1.2-0-dev/libglib1.2-dev/' \
+	-e 's/libgmodule-1.2-0-dev/libglib1.2-dev/' \
+	-e 's/libgtk-1.2-0-dev/libgtk1.2-dev/' \
+	-e 's/libpam0-dev/libpam0g-dev/' \
+	-e 's/libgdk-1.2-0-dev/libgtk1.2-dev/' \
+	-e 's/libz1-dev/zlib1g-dev/' \
+	-e 's/libgcc_s1-dev//' \
+        -e 's/libcrypto.*-dev/libssl-dev/' \
+        -e 's/libssl.*-dev/libssl-dev/' \
+	-e 's/libcomerr2//' \
+	-e 's/libcom_err2-dev/comerr-dev/' \
+	-e 's/libgssapi_krb5-2-dev/libkrb5-dev/' \
+	-e 's/libk5crypto3-dev/libkrb5-dev/' \
+	-e 's/libkrb5-3-dev/libkrb5-dev/' \
+	-e 's/libparted-1.6-0-dev/libparted1.6-dev/' \
+	-e 's/libSDL-1.2-0-dev/libsdl1.2-dev/' \
+	-e 's/libvorbis0-dev/libvorbis-dev/' \
+	-e 's/libcrack2-dev/cracklib2-dev/' \
+	-e 's/libkrb1-dev/kerberos4kth-dev/' \
+	-e 's/libtheora0-dev/libtheora-dev/' \
+	-e 's/libvorbisenc2-dev/libvorbis-dev/' \
+	-e 's/libogg0-dev/libogg-dev/' \
+	-e 's/libspeex1-dev/libspeex-dev/' \
+	-e 's/librt1-dev//' \
+
+
+}
+
+
+function validate_package () {
+# validate if package foo exists, this relies on apt.
+    if [ -z "$1" ]; then 
+	# ignore empty.
+	return;
+    fi
+    if grep "^Package: $1\$" debian/control > /dev/null 2> /dev/null ; then
+	# ignore package that is going to be created.
+	echo " --> $1 package from same source package." >&2 
+	return
+    fi
+    case $(echo $(apt-cache show $1 2> /dev/null| wc -l ) ) in
+	0)
+	    case $(echo $(apt-cache showpkg $1 2> /dev/null | awk ' /^Reverse Provides: $/,/^$/ {if ($0 !~ /:/) {print $0}}' | wc -l) ) in
+		0) 
+		    echo "devlibs error: There is no package matching [$1] and noone provides it, please report bug to d-shlibs maintainer" >&2
+		    return 1;;
+		*) echo " --> $1 is provided by a package." >&2 ;;
+	    esac;;
+	*) echo " --> $1 package exists." >&2 ;;
+    esac
+    return 0;
+}
+
+if [ -z "$2" ]; then
+    echo "$0: Please read manpage for help, not enough options given"
+    exit 1
+fi
+
+OUTPUTFILE="$1"
+shift;
+
+DEPENDS=""
+for A in $*; do
+    # let shell do the delimiting of objdump output./
+    DEPENDS="$DEPENDS $(set -o pipefail; objdump -p ${A} |sed -n 's/^.*NEEDED *//p')"
+done
+
+outputtmp=$(tempfile)
+(
+    set -e
+    if [ -f "$OUTPUTFILE" ] ; then
+	if grep -v "^devlibs:Depends=" "$OUTPUTFILE"; then
+	    :
+	fi
+    fi
+    printf "devlibs:Depends="
+    for A in $DEPENDS; do #DEPENDS is a space-delimited thing.
+	getname "$A"
+	echo $RETURN-dev | overridedevlibdeps
+    done | \
+	sort | \
+	uniq | \
+	while read B; do
+	    # abuse that only first part of multi-entry overrides is considered
+	    if validate_package $B ; then
+		printf "%s " $B ;
+	    else
+		echo "ERROR_DEVLIB "
+	    fi
+    done | sed -e 's/\([a-z0-9)]\) \+\([a-z]\)/\1, \2/g' -e 's/ \+/ /g' -e 's/^ //' -e 's/ $//'
+    printf "\n"
+) > "${outputtmp}"
+
+if grep "ERROR_DEVLIB" "$outputtmp" > /dev/null; then
+    exit 1
+fi
+
+mv "${outputtmp}" $OUTPUTFILE

@@ -1,0 +1,3 @@
+1001_upstream_is_not_debian.patch
+1002_link_against_libspeex.patch
+1003_fix_pkg-config_requires.patch

@@ -1,0 +1,369 @@
+libshout (2.2.2-5) unstable; urgency=high
+
+  * Dropped previous patch to allow mpeg layer III:
+    was buggy. Closes: #490070
+  * Setting urgency to high
+
+ -- Romain Beauxis <toots@rastageeks.org>  Wed, 09 Jul 2008 20:21:03 +0200
+
+libshout (2.2.2-4) unstable; urgency=low
+
+  * Add pach 1004 to allow mpeg layer III (not only layer II).  Closes:
+    bug#358434, thanks to Nicholas Humfrey.
+  * Update local cdbs snippets:
+    + Use patchsys-quilt.mk (not simple-patchsys.mk).
+    + Fix buildinfo.mk to invoke dh-buildinfo only once.
+    + Always do copyright-check, but only warn by default.
+    + Revert changes to README.cdbs-tweaks applied in 2.2.2-3.
+    + Update dependency cleanup to strip cdbs 0.4.27 (not 0.4.27-1).
+  * Update debian/copyright-hints.
+  * Bump debhelper compatibility level to 6.
+  * Depend on ${misc:Depends}.
+  * Unfuzz patches.
+  * Semi-auto-update debian/control to update build-dependencies:
+      DEB_MAINTAINER_BUILD=yes fakeroot debian/rules clean
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sun, 29 jun 2008 11:50:07 +0200
+
+libshout (2.2.2-3) unstable; urgency=low
+
+  [ Jonas Smedegaard ]
+  * Update local cdbs snippets:
+    + Add update-tarball.mk to implement get-orig-source and more.
+    + Major improvements to copyright-check, including new versioned
+      build-dependency on devscripts.  Update debian/copyright_hints.
+    + Drop auto-update.mk override.  Set DEB_AUTO_UPDATE_DEBIAN_CONTROL
+      directly instead when needed.
+    + Add debian/README.cdbs-tweaks documenting local tweaks, and
+      advertise it in debian/rules.
+  * Fix prepend "Vcs-" to Vcs-* fields.
+  * Bump debhelper compatibility level to version 5.
+  * Resolve all build-dependencies using cdbs, and cleanup duplicates.
+  * Fix watch file to invoke svn-upgrade (not uupdate).
+  * Semi-auto-update debian/control to update build-dependencies:
+    DEB_AUTO_UPDATE_DEBIAN_CONTROL=yes fakeroot debian/rules clean
+
+  [ Romain Beauxis ]
+  * Made copyright check optional, add documentation
+  * Added a special variable to enable maintainer mode builds,
+    with, for now, copyright check and control file update. Use:
+      DEB_MAINTAINER_BUILD=yes (svn|dpkg)-buildpackage (...)
+    and similar..
+  * New binary build fixes libtool issue
+  Closes: #474895
+
+ -- Romain Beauxis <toots@rastageeks.org>  Sat, 12 Apr 2008 01:55:52 +0100
+
+libshout (2.2.2-2) unstable; urgency=low
+
+  [ Jonas Smedegaard ]
+  * Add Svn and Browser fields to debian/control.
+  * Move Homepage to own field (from pseudo-field in long description).
+
+  [ Romain Beauxis ]
+  * Patched shout.pc to avoid static link flags from appearing for dynamic
+    linking. Closes: #395185
+  * Updated standards to 3.7.3 (no changes)
+  * Updated control to use ${binary:Version}, added new team members as
+    uploaders.
+  * Updated debian/copyright to the new format described at:
+      http://wiki.debian.org/Proposals/CopyrightFormat
+  * Added config.log to excluded files for automatic copyright check.
+    Closes: #424539
+
+ -- Romain Beauxis <toots@rastageeks.org>  Tue, 11 Dec 2007 14:44:08 +0100
+
+libshout (2.2.2-1) unstable; urgency=medium
+
+  * New upstream release. Closes: bug#376063 (thanks to Frederic Briere
+    <fbriere@fbriere.net>).
+    + Fixes memory leaks. Closes: bug#345926 (thanks to Rakotomandimby
+      Mihamina <mihamina.rakotomandimby@etu.univ-orleans.fr> for
+      noticing the newer release, and to Ying-Chun Liu
+      <grandpaul@gmail.com> for tracking the memory leak bug).
+  * Bump watch file to version 3 (no other changes - let's see if that
+    magically makes qa.debian.org work again, or it perhaps needs a
+    simpler regex.)
+  * Bump standards-version to 3.7.2 (no changes needed).
+  * Update local cdbs snippet copyright-check.mk:
+    + Make egrep options configurable.
+    + Ignore auto-tools files.
+  * Add diffs of local tweaked d-shlibs to source (filed as bug#378331).
+  * Setting urgency=medium due to possibly security-related memory leak
+    fixes.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sat, 15 Jul 2006 12:07:32 +0200
+
+libshout (2.2-2) unstable; urgency=low
+
+  * Add patch 1002 to link against libspeex. Closes: bug#368018 (thanks
+    to Christian T. Steigies <cts@debian.org> and Julien Cristau
+    <julien.cristau@ens-lyon.org>).
+  * Use local hacked d-shlibs supporting libspeex1-dev -> libsppex-dev.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Thu,  4 May 2006 23:29:10 +0200
+
+libshout (2.2-1) unstable; urgency=low
+
+  * New upstream release. Closes bug#345926 (thanks to Rakotomandimby
+    Mihamina <mihamina.rakotomandimby@etu.univ-orleans.fr>).
+  * ARRRGH - upstream now includes a debian subdir (despite my request
+    long ago to avoid that). Patch around it.
+  * Build-depend on libspeex-dev to include new Speex support.
+  * Update local cdbs snippet auto-update.mk:
+    + Drop unneeded buildcore.mk inclusion.
+    + Avoid problematic build-essential build-dependency.
+  * Update local cdbs snippet copyright-check.mk:
+    + Support changing the scope of files found.
+    + Treat all found files as non-binary.
+  * Semi-auto-update debian/rules.
+  * Update debian/copyright_hints (no changes to debian/copyright).
+  * Indent Homepage in long descriptions.
+  * Bump to standards-version 3.7.1 (no changes needed).
+
+ -- Jonas Smedegaard <dr@jones.dk>  Thu,  4 May 2006 21:46:26 +0200
+
+libshout (2.1-5) unstable; urgency=low
+
+  * This package is now team-maintained!
+    + Debian Icecast team <pkg-icecast-devel@lists.alioth.debian.org>
+      maintains the package, with me as uploader.
+    + If you want to help improve the package or want other Icecast-
+      related packages maintained here then drop an email to the above
+      mailinglist!
+  * Move auto-update of debian/control out in reusable cdbs snippet.
+  * Add local cdbs snippet copyright-check.mk.
+  * Minor update to existing cdbs snippet buildinfo (better namespace).
+  * Add to debian/copyright copyright some differing licensing info:
+    + src/avl/ (BSD-like)
+    + src/thread/ (LGPL)
+    + src/net/ (LGPL)
+    + src/htpp/ and src/timing/ (LGPL)
+  * Mention homepage (not website) in long descriptions.
+  * Auto-update debian/control, and manually strip build-essential from
+    build-dependencies to not upset ftp-masters.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sat, 17 Dec 2005 23:05:17 +0100
+
+libshout (2.1-4) unstable; urgency=low
+
+  * Raise to standards version 3.6.2 (no changes needed).
+  * Only use cdbs debian/control auto-build when environment includes
+    DEB_BUILD_OPTIONS=update.
+  * Auto-update build-dependencies (and manually rip out build-essential
+    buggily sneaking in).
+  * Fix watch file by simplifying it (seems uscan wrongly parse it as a
+    newer version format).
+
+ -- Jonas Smedegaard <dr@jones.dk>  Wed, 13 Jul 2005 18:19:18 +0200
+
+libshout (2.1-3) unstable; urgency=high
+
+  * Fix package dependency calculation to get done *before* library is
+    moved around (and file bug against d-shlibs for not failing hard on
+    stupid errors like this). Closes: bug#306160 (thanks to Andreas
+    Jochens <aj@andaco.de> and Roland Stigge <stigge@antcom.de> for
+    reporting, and to Steve Langasek <vorlon@debian.org> for
+    enlightenment).
+  * Set urgency=high to get this into sarge, as it causes FTBFS of other
+    packages.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Mon, 25 Apr 2005 13:20:46 +0200
+
+libshout (2.1-2) unstable; urgency=low
+
+  * Build-depend on recent enough libtheora (now that it has entered
+    sarge).
+
+ -- Jonas Smedegaard <dr@jones.dk>  Mon, 11 Apr 2005 19:16:53 +0200
+
+libshout (2.1-1) unstable; urgency=low
+
+  * New upstream release. Closes: bug#297780 (thanks to Andre Tomt
+    <andre@tomt.net>).
+  * Update upstream source location in copyright and watch file. Closes:
+    bug#297932 (thanks to Frederic Briere <fbriere@fbriere.net>).
+  * Drop upstream debian/ subdir, and add note about it to copyright.
+  * Use cdbs auto-update feature.
+  * Use local cdbs snippet for dh-buildinfo.
+  * Calculate dependencies in common-binary-post-install-arch (it is
+    used not only on -dev package!).
+  * Build-depend on libtheora-dev.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sat, 26 Mar 2005 11:55:05 +0100
+
+libshout (2.0-9) unstable; urgency=low
+
+  * Add website URL to long descriptions.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Mon,  6 Sep 2004 13:05:16 +0200
+
+libshout (2.0-8) unstable; urgency=low
+
+  * Take over maintainership (too long for Keegan to become Debian
+    developer).
+  * Clean up debian/rules:
+    + Make targets a bit more generic.
+    + include copyright info.
+    + Declare example file here (not in separate file).
+  * Use d-shlibmove to intelligently install shared library.
+  * Have -dev package provide and conflict with virtual libshout-dev
+    (thanks to d-shlibmove).
+  * Clean up debian/copyright:
+    + Replace info contained in changelog with note on "GNU systems".
+    + Mention "licensing info" together with copyright.
+    + Quote copyright and licensing info verbatim (from shout.c).
+    + Clarify that it is on Debian systems the license is located
+      outside the source, and the full name of the license.
+  * Update watch file:
+    + Add comment about usage of the file.
+    + Make regexp more generic.
+  * Standards-version 3.6.1 (no changes needed).
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sun,  5 Sep 2004 21:22:47 +0200
+
+libshout (2.0-7.1) unstable; urgency=low
+
+  * NMU by sponsor.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sun, 17 Aug 2003 10:33:23 +0200
+
+libshout (2.0-7) unstable; urgency=low
+
+  * Removed cdbs/autotools-vars.mk, from cdbs CVS, because a new release
+    was made.
+
+ -- Keegan Quinn <ice@thebasement.org>  Sat,  2 Aug 2003 20:17:23 -0700
+
+libshout (2.0-6) unstable; urgency=low
+
+  * Now uses d-shlibs to automatically generate dependancies for 
+    the development package.  Added a Build-Dependancy to d-shlibs.
+    Thanks to Junichi Uekawa for quickly updating d-shlibs to
+    support libvorbis-dev.
+  * Added a 'watch' file to automate tracking of updates.
+  * Updated long descriptions with slightly more accurate text.
+  * Now uses dh-buildinfo to store information about the package build
+    environment.  Added a Build-Dependancy to dh-buildinfo.
+  * Thanks to Jonas Smedegaard for sponsoring this package, and 
+    providing many good suggestions.
+
+ -- Keegan Quinn <ice@thebasement.org>  Thu, 31 Jul 2003 06:09:05 +0000
+
+libshout (2.0-5) unstable; urgency=low
+
+  * Another sponsored upload...
+  * Use autotools-vars.mk from CVS to avoid cross-compiling on same
+    host.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sun, 20 Jul 2003 13:07:33 +0200
+
+libshout (2.0-4) unstable; urgency=low
+
+  * Configured debian/rules to use cdbs, and added the appropriate 
+    Build-Dependancy.
+
+ -- Keegan Quinn <ice@thebasement.org>  Sat, 19 Jul 2003 00:23:25 -0700
+
+libshout (2.0-3) unstable; urgency=low
+
+  * Rebuild with -sa to forcefully include source. Also, this (still)
+    closes: Bug#185644.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Fri, 18 Jul 2003 15:15:27 +0200
+
+libshout (2.0-2) unstable; urgency=low
+
+  * Sponsored upload on behalf of keegan (splendid packaging - looking
+    forward to see you in Debian soon!).
+  * Keep Maintainer field, but add myself as uploader.
+  * Bump up standards-version to 3.6.0 (no changes needed).
+  * Only provide --host to configure if different from --build, to avoid
+    cross-compiling on same arch (as recommended by autotools-dev
+    README-Debian).
+  * Include shout.m4 and example.c in -dev package.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Fri, 18 Jul 2003 14:37:39 +0200
+
+libshout (2.0-1) unstable; urgency=low
+
+  * Added pkg-config Dependancy and Build-Dependancy, fixing an
+    FTBFS error which made the -dev package unusable.
+  * This version should be fully suitable for entering Debian.  
+    (Closes: #185644)
+
+ -- Keegan Quinn <ice@thebasement.org>  Mon, 14 Jul 2003 16:36:50 -0700
+
+libshout (2.0-0.1) unstable; urgency=low
+
+  * Final upstream release!
+
+ -- Keegan Quinn <ice@thebasement.org>  Mon, 14 Jul 2003 15:00:13 -0700
+
+libshout (1.9+2.0alphacvs030704-0.1) unstable; urgency=low
+
+  * Constructed a build script to completely automate the construction
+    of the 'pristine' tarball from CVS.  This doesn't really effect the
+    contents of the package, just makes it easier for me to rebuild.
+  * New CVS source.
+  * Included /usr/lib/pkgconfig/shout.pc for pkg-config support, newly
+    added upstream.
+
+ -- Keegan Quinn <ice@thebasement.org>  Fri,  4 Jul 2003 02:42:54 -0700
+
+libshout (0.00.cvs030403-0.1) unstable; urgency=low
+
+  * New CVS source.
+
+ -- Keegan Quinn <ice@thebasement.org>  Thu,  3 Apr 2003 16:11:46 -0800
+
+libshout (0.00.cvs030401-0.1) unstable; urgency=low
+
+  * New CVS source.
+  * Updated section to comply with new Debian main sections.
+
+ -- Keegan Quinn <ice@thebasement.org>  Tue,  1 Apr 2003 10:17:27 -0800
+
+libshout (0.00.cvs030327-0.1) unstable; urgency=low
+
+  * New CVS source.
+  * Added shared library symlink to the packaging, per a suggestion from
+    Timothy A Nowaczyk <zimage@upl.cs.wisc.edu>.
+  * Updated copyright file and control description, per suggestions from
+    Jack Moffitt <jack@xiph.org>.
+
+ -- Keegan Quinn <ice@thebasement.org>  Thu, 27 Mar 2003 11:43:32 -0800
+
+libshout (0.00.cvs030320-0.1) unstable; urgency=low
+
+  * New CVS source.
+  * Automated CVS original source creation.
+  * Fixed a bug regarding shared library symlinks being packaged.
+
+ -- Keegan Quinn <ice@thebasement.org>  Thu, 20 Mar 2003 11:46:48 -0800
+
+libshout (0.00.cvs030315-0.4) unstable; urgency=low
+
+  * Renamed development package according to library packinging guide,
+    general restructuring. 
+
+ -- Keegan Quinn <ice@thebasement.org>  Sun, 16 Mar 2003 01:49:53 -0800
+
+libshout (0.00.cvs030315-0.3) unstable; urgency=low
+
+  * Second attempt at correcting shared library dependancies.
+
+ -- Keegan Quinn <ice@thebasement.org>  Sun, 16 Mar 2003 00:50:35 -0800
+
+libshout (0.00.cvs030315-0.2) unstable; urgency=low
+
+  * Corrected shared library dependancies. 
+
+ -- Keegan Quinn <ice@thebasement.org>  Sun, 16 Mar 2003 00:24:22 -0800
+
+libshout (0.00.cvs030315-0.1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Keegan Quinn <ice@thebasement.org>  Sat, 15 Mar 2003 00:13:34 -0800
+

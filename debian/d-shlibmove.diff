@@ -1,0 +1,11 @@
+--- d-shlibmove	2006-07-01 07:04:26.000000000 +0200
++++ /home/jonas/src/SVNauth/pkg-icecast/libshout/debian/d-shlibmove	2006-05-28 18:51:07.000000000 +0200
+@@ -163,7 +163,7 @@
+     echo "echo \"${SONAMELIBNAME} ${SONAMEVERSION} ${PKGSHL} (>= ${SHLIBSLOCALVER})\" >> debian/shlibs.local" >> "$execscript"
+ fi
+ 
+-d-devlibdeps debian/"${PKGDEV}".substvars "${DEVLIB_TO_CHECK}"
++bash debian/d-devlibdeps debian/"${PKGDEV}".substvars "${DEVLIB_TO_CHECK}"
+ 
+ #do some definition for the file.
+ echo "PKGDEV=${PKGDEV}" >> "${execscript}"

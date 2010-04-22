@@ -1,0 +1,101 @@
+*No copyright* UNKNOWN []: INSTALL
+	Makefile.am
+	NEWS
+	README
+	config.h.in
+	configure.ac
+	doc/Makefile.am
+	doc/libshout.xml
+	doc/spec-html.xsl
+	examples/Makefile.am
+	examples/example.c
+	examples/nonblocking.c
+	include/Makefile.am
+	include/os.h
+	include/shout/Makefile.am
+	m4/acx_pthread.m4
+	m4/ogg.m4
+	m4/shout.m4
+	m4/speex.m4
+	m4/theora.m4
+	m4/vorbis.m4
+	m4/xiph_compiler.m4
+	m4/xiph_net.m4
+	m4/xiph_types.m4
+	shout.pc.in
+	src/Makefile.am
+	src/avl/BUILDING
+	src/avl/Makefile.am
+	src/avl/README
+	src/avl/TODO
+	src/avl/test.c
+	src/httpp/Makefile.am
+	src/httpp/README
+	src/httpp/TODO
+	src/httpp/httpp.c
+	src/httpp/httpp.h
+	src/net/BUILDING
+	src/net/Makefile.am
+	src/net/README
+	src/net/TODO
+	src/net/resolver.h
+	src/net/test_resolver.c
+	src/shout_private.h
+	src/thread/BUILDING
+	src/thread/Makefile.am
+	src/thread/README
+	src/thread/TODO
+	src/timing/BUILDING
+	src/timing/Makefile.am
+	src/timing/README
+	src/timing/TODO
+	src/timing/timing.c
+	src/timing/timing.h
+	src/util.h
+	win32/Makefile.am
+GENERATED FILE [1994-2002]: Makefile.in
+	doc/Makefile.in
+	examples/Makefile.in
+	include/Makefile.in
+	include/shout/Makefile.in
+	src/Makefile.in
+	src/avl/Makefile.in
+	src/httpp/Makefile.in
+	src/net/Makefile.in
+	src/thread/Makefile.in
+	src/timing/Makefile.in
+	win32/Makefile.in
+UNKNOWN [1991 Free Software Foundation, Inc]: COPYING
+	src/avl/COPYING
+	src/httpp/COPYING
+	src/net/COPYING
+	src/thread/COPYING
+	src/timing/COPYING
+*No copyright* GENERATED FILE []: m4/ac_config_libconfig_in.m4
+	shout-config.in
+	src/avl/avl.dsp
+	win32/libshout.dsp
+	win32/libshout.dsw
+LGPL-2+ [2002-2003 the Icecast team <team@icecast.org>]: include/shout/shout.h.in
+	src/mp3.c
+	src/util.c
+LGPL-2+ [2002-2004 the Icecast team <team@icecast.org>]: src/ogg.c
+	src/shout.c
+	src/vorbis.c
+GPL GENERATED FILE [1999-2000, 2003-2005 Free Software Foundation, Inc]: compile
+	depcomp
+LGPL-2+ [1999-2000 the icecast team <team@icecast.org>]: src/thread/thread.c
+	src/thread/thread.h
+LGPL-2+ [2004 the Icecast team <team@icecast.org>]: src/shout_ogg.h
+	src/theora.c
+GENERATED FILE [2003 Free Software Foundation, Inc]: configure
+GPL GENERATED FILE [1996-1997, 1999-2000, 2002-2005]: missing
+GPL-2+ GENERATED FILE [1996-2001, 2003-2005]: ltmain.sh
+GPL-2+ [1999 the icecast team]: src/net/sock.h
+LGPL-2+ [1999 the icecast team <team@icecast.org>]: src/net/resolver.c
+LGPL-2+ [1999 the icecast team]: src/net/sock.c
+LGPL-2+ [2005 the Icecast team <team@icecast.org>]: src/speex.c
+MIT/X11 (BSD like) [1994 X Consortium]: install-sh
+UNKNOWN [1995 by Sam Rushing <rushing@nightmare.com>]: src/avl/avl.h
+UNKNOWN [1995-1997 by Sam Rushing <rushing@nightmare.com>]: src/avl/avl.c
+UNKNOWN [1996-2004]: aclocal.m4
