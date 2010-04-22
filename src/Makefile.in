@@ -66,11 +66,11 @@ am__DEPENDENCIES_2 =
 libshout_la_DEPENDENCIES = net/libicenet.la timing/libicetiming.la \
 	avl/libiceavl.la httpp/libicehttpp.la $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
-am__libshout_la_SOURCES_DIST = shout.c util.c ogg.c vorbis.c mp3.c \
+am__libshout_la_SOURCES_DIST = shout.c util.c ogg.c vorbis.c aac.c mp3.c \
 	theora.c speex.c
 @HAVE_THEORA_TRUE@am__objects_1 = theora.lo
 @HAVE_SPEEX_TRUE@am__objects_2 = speex.lo
-am_libshout_la_OBJECTS = shout.lo util.lo ogg.lo vorbis.lo mp3.lo \
+am_libshout_la_OBJECTS = shout.lo util.lo ogg.lo vorbis.lo aac.lo mp3.lo \
 	$(am__objects_1) $(am__objects_2)
 libshout_la_OBJECTS = $(am_libshout_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -258,7 +258,7 @@ lib_LTLIBRARIES = libshout.la
 libshout_la_LDFLAGS = -version-info 5:0:2
 EXTRA_DIST = theora.c speex.c
 noinst_HEADERS = shout_ogg.h shout_private.h util.h
-libshout_la_SOURCES = shout.c util.c ogg.c vorbis.c mp3.c $(MAYBE_THEORA) $(MAYBE_SPEEX)
+libshout_la_SOURCES = shout.c util.c ogg.c vorbis.c aac.c mp3.c $(MAYBE_THEORA) $(MAYBE_SPEEX)
 AM_CFLAGS = @XIPH_CFLAGS@
 libshout_la_LIBADD = net/libicenet.la timing/libicetiming.la avl/libiceavl.la\
 		httpp/libicehttpp.la $(MAYBE_THREAD_LIB) $(THEORA_LIBS) $(VORBIS_LIBS)
@@ -334,6 +334,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mp3.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aac.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ogg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shout.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/speex.Plo@am__quote@
