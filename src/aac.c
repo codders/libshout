@@ -83,7 +83,7 @@ struct aac_data {
 typedef struct aac_data aac_data_t;
 
 /* -- static prototypes -- */
-static void process_local_buffer(shout_t *self, aac_data_t *data);
+static int process_local_buffer(shout_t *self, aac_data_t *data);
 static int send_aac(shout_t *self, const unsigned char *data, size_t len);
 static void close_aac(shout_t *self);
 
@@ -151,31 +151,37 @@ static void shift_data_left(aac_data_t *data, size_t amount) {
   data->buffer_length -= shift;
 }
 
-static void send_frame(shout_t *self, aac_data_t *data) {
+static int send_frame(shout_t *self, aac_data_t *data) {
   trace("%s\n", __FUNCTION__);
-  if (data->buffer_length >= data->frame_length) {
-    data->frames_sent++;
-    self->senttime = (int64_t)((double)data->frames_sent * 1000000/(double)data->frames_per_second);
-    shout_send_raw(self, data->buffer, data->frame_length);
-    shift_data_left(data, data->frame_length);
-    data->state = PARSE_HEADER;
-    process_local_buffer(self, data);
-  }
+  int ret;
+  if (data->buffer_length < data->frame_length)
+   return SHOUTERR_SUCCESS;
+
+  data->frames_sent++;
+  self->senttime = (int64_t)((double)data->frames_sent * 1000000/(double)data->frames_per_second);
+
+  ret = shout_send_raw(self, data->buffer, data->frame_length);
+  if (ret != data->frame_length)
+    return SHOUTERR_SOCKET;
+
+  shift_data_left(data, data->frame_length);
+  data->state = PARSE_HEADER;
+  return process_local_buffer(self, data);
 }
 
 static int valid_header_bytes(const unsigned char *buf) {
   return buf[0] == 0xFF && (buf[1] & 0xF6) == 0xF0;
 }
 
-static void process_local_buffer(shout_t *self, aac_data_t *data) {
+static int process_local_buffer(shout_t *self, aac_data_t *data) {
   trace("%s\n", __FUNCTION__);
   if (!data->buffer) {
-    return;
+    return SHOUTERR_SUCCESS;
   }
   switch (data->state) {
     case PARSE_HEADER:
       if (data->buffer_length < ADTS_HEADER_SIZE) {
-        return;
+        return SHOUTERR_SUCCESS;
       }
       if (!valid_header_bytes(data->buffer)) {
         fprintf(stderr, "Invalid header bytes detected. Quittung\n");
@@ -183,16 +189,15 @@ static void process_local_buffer(shout_t *self, aac_data_t *data) {
       }
       read_header_data(data);
       data->state = READ_FRAME;
-      process_local_buffer(self, data);
-      break;
+      return process_local_buffer(self, data);
     case READ_FRAME:
-      send_frame(self, data);
-      break;
+      return send_frame(self, data);
     case SEEK:
       fprintf(stderr, "Shouldn't get here\n");
       exit(1);
       break;
   }
+  return SHOUTERR_SUCCESS;
 }
 
 static int send_aac(shout_t* self, const unsigned char* buf, size_t len)
@@ -207,7 +212,8 @@ static int send_aac(shout_t* self, const unsigned char* buf, size_t len)
           debug("Found Frame Header\n");
           copy_to_local_buffer(data, buf, i, len - i);
           data->state = PARSE_HEADER;
-          process_local_buffer(self, data);
+          if ((self->error = process_local_buffer(self, data)) != SHOUTERR_SUCCESS)
+            return self->error;
           break;
         }
         i++;
@@ -216,9 +222,9 @@ static int send_aac(shout_t* self, const unsigned char* buf, size_t len)
     default:
       debug("Copying data to end of existing buffer\n");
       append_to_local_buffer(data, buf, len);
-      process_local_buffer(self, data);
+      return self->error = process_local_buffer(self, data);
   }
-  return SHOUTERR_SUCCESS;
+  return self->error = SHOUTERR_SUCCESS;
 }
 
 static void close_aac(shout_t *self) {
